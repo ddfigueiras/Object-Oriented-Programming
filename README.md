@@ -5,12 +5,20 @@ This repository contains a Java program developed as part of the Object-Oriented
 # Files
 
 Cliente.java: Main class for the program.
+
 ClienteTest.java: Test cases for the Cliente class. (Client implementation and management)
+
 Poligono.java: Implementation of the Poligono class. (Polygon)
+
 PoligonoRetanguloa.java: Implementation of the Poligono Area (in a rectangle area for extream cases) class. 
+
 Ponto.java: Implementation of the Ponto class. (Point/Dot)
+
 Trajetoria.java: Implementation of the Trajetoria class. (Trajectory)
-Objective
+
+
+# Objective
+
 The objective of this project is to develop a program capable of efficiently handling polygons, trajectories, and related functionalities such as intersections. The final version of the program will allow for moving objects without intersecting and provide other advanced features.
 
 # Usage
