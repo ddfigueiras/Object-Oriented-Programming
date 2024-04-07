@@ -135,4 +135,76 @@ public class ClienteTest {
                 pontosPoligonoTeste.add(ponto3);
                 assertEquals("Segmento:vi", new Poligono(pontosPoligonoTeste).toString());
         }
+        @Test
+        public void testPoligonoRetangulo1() 
+        {
+                int[] valores = {10, 20, -20, 30};
+                assertEquals("Ponto:vi", new PoligonoRetangulo(valores));
+        }
+        @Test
+        public void testPoligonoRetangulo2() 
+        {
+                int[] valores = {-10, 20, 120, 30};
+                assertEquals("Ponto:vi", new PoligonoRetangulo(valores));
+        }
+        @Test
+        public void testPoligonoRetangulo3() 
+        {
+                int[] valores = {0, -20, 20, -30};
+                assertEquals("Ponto:vi", new PoligonoRetangulo(valores));
+        }
+        @Test
+        public void testPoligonoRetanguloIntercept1() 
+        {
+                int[] valores = {0, -20, 20, -30};
+                int[] valores1 = {10, -10, 10, 30};
+                PoligonoRetangulo poligonoRetangulo = new PoligonoRetangulo(valores);
+                PoligonoRetangulo poligonoRetangulo1 = new PoligonoRetangulo(valores1);
+                assertEquals(true, poligonoRetangulo.intercept(poligonoRetangulo1));
+        }
+        @Test
+        public void testPoligonoRetanguloIntercept2() 
+        {
+                int[] valores = {0, -20, 10, -30};
+                int[] valores1 = {10, -40, 20, -30};
+                PoligonoRetangulo poligonoRetangulo = new PoligonoRetangulo(valores);
+                PoligonoRetangulo poligonoRetangulo1 = new PoligonoRetangulo(valores1);
+                assertEquals(true, poligonoRetangulo.intercept(poligonoRetangulo1));
+        }
+        @Test
+        public void testPoligonoRetanguloIntercept3() 
+        {
+                int[] valores = {0, -203, 20, -30};
+                int[] valores1 = {100, -10, 20, -30};
+                PoligonoRetangulo poligonoRetangulo = new PoligonoRetangulo(valores);
+                PoligonoRetangulo poligonoRetangulo1 = new PoligonoRetangulo(valores1);
+                assertEquals(true, poligonoRetangulo.intercept(poligonoRetangulo1));
+        }
+        @Test
+        public void pontosColinear1() 
+        {
+                Ponto ponto1 = new Ponto(10, 10);
+                Ponto ponto2 = new Ponto(20, 10);
+                Ponto ponto3 = new Ponto(30, 10);
+
+                assertEquals(true, Ponto.isColinear(ponto1, ponto2, ponto3));
+        }
+        @Test
+        public void pontosColinear2() 
+        {
+                Ponto ponto1 = new Ponto(10, 10);
+                Ponto ponto2 = new Ponto(10, 20);
+                Ponto ponto3 = new Ponto(10, 30);
+
+                assertEquals(true, Ponto.isColinear(ponto1, ponto2, ponto3));
+        }
+        @Test
+        public void pontosColinear3() 
+        {
+                Ponto ponto1 = new Ponto(100, 1000);
+                Ponto ponto2 = new Ponto(200, 1000);
+                Ponto ponto3 = new Ponto(300, 1000);
+
+                assertEquals(true, Ponto.isColinear(ponto1, ponto2, ponto3));
+        }
 }

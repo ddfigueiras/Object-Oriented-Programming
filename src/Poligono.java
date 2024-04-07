@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Poligono 
 {
@@ -21,6 +23,32 @@ public class Poligono
             System.out.println("Erro não printado. Saida forçada...");
             System.exit(0);
         }
+    }
+
+    public Poligono(String pontos) 
+    {
+        List<Ponto> temp = new ArrayList<>();
+        String[] numbersStr = pontos.split(" ");
+        int startIndex = numbersStr.length % 2 == 0 ? 0 : 1;
+        
+        for (int i = startIndex; i < numbersStr.length; i += 2) 
+        {
+            Ponto p = new Ponto(Integer.parseInt(numbersStr[i]), Integer.parseInt(numbersStr[i + 1]));
+            //System.out.println(p.toString());
+            temp.add(p);
+        }
+        /*
+        System.out.println("==================");
+        System.out.println(temp.size());
+        System.out.println("===============");
+        */
+        this.pontos = temp;
+        if (!this.isValid(false)) 
+        {
+            System.out.println("Erro não printado. Saída forçada...");
+            System.exit(0); 
+        }
+        
     }
 
     /**
@@ -123,13 +151,16 @@ public class Poligono
         if(colinear)
             Cliente.printError("Poligono:vi");
         // Verificar interseções entre segmentos consecutivos
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) 
+        {
             Ponto p3 = pontos.get(i);
             Ponto p4 = pontos.get((i + 1) % n);
-            for (int j = i + 2; j < n; j++) {
+            for (int j = i + 2; j < n; j++) 
+            {
                 Ponto p5 = pontos.get(j);
                 Ponto p6 = pontos.get((j + 1) % n);
-                if (intersecaoSegmentos(p3, p4, p5, p6, poligonoSimples)) {
+                if (intersecaoSegmentos(p3, p4, p5, p6, poligonoSimples)) 
+                {
                     Cliente.printError("Poligono:vi"); // Se houver interseção, o polígono não é válido
                 }
             }
@@ -170,7 +201,6 @@ public class Poligono
 
         if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) 
         {
-            
             return true;
         }
         return false;
@@ -217,11 +247,13 @@ public class Poligono
             Ponto p1 = pontos.get(i);
             Ponto p2 = pontos.get((i + 1) % n);
 
-            for (int j = 0; j < listaPontos.size() - 1; j++) {
+            for (int j = 0; j < listaPontos.size() - 1; j++) 
+            {
                 Ponto p3 = listaPontos.get(j);
                 Ponto p4 = listaPontos.get(j + 1);
                 
-                if (intersecaoSegmentos(p1, p2, p3, p4, poligonoSimples)) {
+                if (intersecaoSegmentos(p1, p2, p3, p4, poligonoSimples)) 
+                {
                     /*System.out.println("==================");
                     System.out.println(i);
                     System.out.println(p1.getX() + "," + p1.getY() + " "  + p2.getX() + "," + p2.getY() + " " + p3.getX() + "," + p3.getY() + " " + p4.getX() + "," + p4.getY() + " ");
@@ -233,12 +265,132 @@ public class Poligono
         return false;
     }
 
-    public List<Ponto> getPontos() {
+    public List<Ponto> getPontos() 
+    {
         return pontos;
     }
 
-    public void setPontos(List<Ponto> pontos) {
+    public void setPontos(List<Ponto> pontos) 
+    {
         this.pontos = pontos;
+    }
+    public boolean samePoints(Poligono other) 
+    {
+        if (other == null) {
+            return false;
+        }
+        List<Ponto> otherPontos = other.getPontos();
+
+        if (pontos.size() != otherPontos.size()) 
+        {
+            return false;
+        }
+        int mesmosPontos = 0;
+        for (int i = 0; i < pontos.size(); i++) 
+        {
+            for(int j = 0; j < otherPontos.size(); j++)
+            {
+                if (pontos.get(i).getX() == otherPontos.get(j).getX() && pontos.get(i).getY() == otherPontos.get(j).getY()) 
+                {
+                    mesmosPontos++;
+                }
+            }
+        }
+        if(mesmosPontos == pontos.size()) return true;
+        return false;
+    }
+
+    public void rotacionar(double anguloGraus, Ponto pontoRotacao) 
+    {
+        double anguloRadianos = Math.toRadians(anguloGraus);
+        double xc, yc;
+
+        if (pontoRotacao == null) {
+            // Se nenhum ponto de rotação for especificado, usar o centroide do polígono
+            double somaX = 0, somaY = 0;
+            for (Ponto p : pontos) {
+                somaX += p.getX();
+                somaY += p.getY();
+            }
+            xc = somaX / pontos.size(); // Calcula a coordenada x do centroide
+            yc = somaY / pontos.size(); // Calcula a coordenada y do centroide
+        } else {
+            // Se um ponto de rotação for especificado, usar suas coordenadas
+            xc = pontoRotacao.getX();
+            yc = pontoRotacao.getY();
+        }
+        for (Ponto p : this.pontos) 
+        {
+            double xOriginal = p.getX() - xc;
+            double yOriginal = p.getY() - yc;
+
+            double xNovo = xc + xOriginal * Math.cos(anguloRadianos) - yOriginal * Math.sin(anguloRadianos);
+            double yNovo = yc + xOriginal * Math.sin(anguloRadianos) + yOriginal * Math.cos(anguloRadianos);
+
+            int xFinal = (int) Math.round(xNovo);
+            int yFinal = (int) Math.round(yNovo);
+            p.setX(xFinal);
+            p.setY(yFinal);
+        }
+    }
+
+    public void translacao(int dx, int dy) 
+    {
+        for (Ponto ponto : this.pontos) 
+        {
+            ponto.setX(ponto.getX() + dx);
+            ponto.setY(ponto.getY() + dy);
+        }
+    }
+
+    public void moverParaNovoCentro(int novoX, int novoY) 
+    {
+        int cx = 0, cy = 0;
+        for (Ponto ponto : pontos) 
+        {
+            cx += ponto.getX();
+            cy += ponto.getY();
+        }
+        cx /= pontos.size();
+        cy /= pontos.size();
+    
+        int dx = novoX - cx;
+        int dy = novoY - cy;
+    
+        translacao(dx, dy);
+    }
+
+    @Override
+    public String toString() 
+    {
+        StringBuilder sb = new StringBuilder();
+        String polygonType = "Poligono";
+        sb.append(polygonType);
+        sb.append(" de ").append(pontos.size()).append(" vertices: ");
+        sb.append("[");
+        for(int i = 0; i < pontos.size(); i++) {
+            sb.append(pontos.get(i).toString());
+            if (i < pontos.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    @Override
+    public int hashCode() 
+    {
+        return Objects.hash(pontos);
+    }
+
+    @Override
+    public boolean equals(Object obj) 
+    {
+        //if (this == obj) return true;
+        // if (obj == null || getClass() != obj.getClass()) return false; 
+        Poligono other = (Poligono) obj;
+        return this.samePoints(other);
     }
 }
 /*

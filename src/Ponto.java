@@ -15,13 +15,32 @@ public class Ponto
         this.y = y;
         if(!this.isFirstQuadrant()) Cliente.printError("Ponto:vi");
     }
+    
     public int getX() {
         return this.x;
     }
+    
     public int getY() {
         return this.y;
     }
+    
+    public void setX(int x)
+    {
+        if(x < 0)
+        {
+            Cliente.printError("Ponto:vi");
+        }
+        this.x = x;
+    }
 
+    public void setY(int y)
+    {
+        if(y < 0)
+        {
+            Cliente.printError("Ponto:vi");
+        }
+        this.y = y;
+    }
     /**
      * distance beetwin the point and other 
      * 
@@ -37,6 +56,12 @@ public class Ponto
         return (int) Math.sqrt(dx * dx + dy * dy);
     }
 
+    int distSquared(Ponto p) 
+    {
+        int dx = x - p.x;
+        int dy = y - p.y;
+        return dx * dx + dy * dy;
+    }
     /**
      * Check X and Y to see if they are in the first square (positives)
      * 
@@ -95,5 +120,11 @@ public class Ponto
                 q.y < Math.max(p.y, r.y) && q.y > Math.min(p.y, r.y))
             return true;
         return false;
+    }
+
+    @Override
+    public String toString() 
+    {
+        return "(" + x + "," + y + ")";
     }
 }

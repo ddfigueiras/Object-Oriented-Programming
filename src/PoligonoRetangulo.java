@@ -1,24 +1,47 @@
 public class PoligonoRetangulo 
 {
-    private int xMax, yMax, xMin, yMin;
+    /*
+     *  ld = LeftDown ru = RightUp
+     */
+    private Ponto ld, ru;
 
-    public PoligonoRetangulo(int[] valores) {
-        this.xMax = valores[0];
-        this.yMax = valores[1];
-        this.xMin = valores[2];
-        this.yMin = valores[3];
+
+    /**
+     * Cria a area/retangulo do poligono.
+     * 
+     * @author (Diogo Silva a79764)
+     * @version (1.0.0 - 19/02/24)
+     * @param int (X and Y)
+     */
+    public PoligonoRetangulo(int[] valores) 
+    {
+        this.ld = new Ponto(valores[0], valores[1]);
+        this.ru = new Ponto(valores[2], valores[3]);
+        if(!isFirstQuadrantPoints()) Cliente.printError("Ponto:vi"); 
     }
     public int getxMax() {
-        return this.xMax;
+        return this.ld.getX();
     }
     public int getyMax() {
-        return this.yMax;
+        return this.ld.getY();
     }
     public int getxMin() {
-        return this.xMin;
+        return this.ru.getX();
     }
     public int getyMin() {
-        return this.yMin;
+        return this.ru.getY();
+    }
+
+    /**
+     * Check X and Y to see if they are in the first square (positives)
+     * 
+     * @author (Diogo Silva a79764)
+     * @version (1.0.0 - 19/02/24)
+     * @param args
+     * @return If it's in first squere = true or not.
+     */
+    boolean isFirstQuadrantPoints() {
+        return ld.isFirstQuadrant() && ru.isFirstQuadrant();
     }
 
     public boolean intercept(PoligonoRetangulo pr1)

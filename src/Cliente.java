@@ -1,6 +1,6 @@
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.HashMap;
@@ -17,46 +17,84 @@ public class Cliente {
      * @param args
      * @return A list of Pontos representing the points read from the input.
      */
-    public static void main(String[] args) {
-        boolean intercepts = false;
-        Scanner sc = new Scanner(System.in).useLocale(Locale.US);
 
-        Map<List<Ponto>, PoligonoRetangulo> listaPoligonos = new HashMap<>();
+    public static String capital(String s) 
+    {
+        if (s == null || s.isEmpty())
+            return s;
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+    }
+    public static void main(String[] args) 
+    {
+        Scanner sc = new Scanner(System.in);
+        List<Poligono> poligonos = new ArrayList<>();
+        while (sc.hasNextLine()) 
+        {
+            String linhaPoligono = sc.nextLine();
+            if (linhaPoligono.isEmpty()) break;
+            
+            String linhaRotacao = sc.nextLine();
+            if (linhaRotacao.isEmpty()) break;
+            
+            String[] partesPoligono = linhaPoligono.split(" ", 2);
+            String[] partesRotacao = linhaRotacao.split(" ");
+            
 
+            //Ponto pontoRotacao = null;
 
-        for (int i = 0; i < 2; i++) {
-            // Lê o número de vértices do polígono atual
-            int numVerticesPoligono = sc.nextInt();
-            // Lê os pontos do polígono atual
-            listaPoligonos.putAll(ReadFromInputPointsN(sc, numVerticesPoligono));
+            int xRotacao = Integer.parseInt(partesRotacao[0]);
+            int yRotacao = Integer.parseInt(partesRotacao[1]);
+            //pontoRotacao = new Ponto(xRotacao, yRotacao);
+
+            try 
+            {
+                Class<?> cl = Class.forName(capital(partesPoligono[0]));
+                Constructor<?> constructor = cl.getConstructor(String.class);
+                Poligono poligono = (Poligono) constructor.newInstance(partesPoligono[1]);
+                for (Poligono poligonotest : poligonos) 
+                {
+                    if(poligonotest.equals(poligono))
+                        printError("Duplicado");
+                }
+                poligono.moverParaNovoCentro(xRotacao, yRotacao);
+                //System.out.println(poligono);
+                poligonos.add(poligono);
+            } catch (ClassNotFoundException e) 
+            {
+                System.out.println("Classe não encontrada: " + e.getMessage());
+            } catch (Exception e) 
+            {
+                e.printStackTrace();
+            }
         }
         sc.close();
-
-        if (!listaPoligonos.isEmpty()) {
-            List<List<Ponto>> chaves = new ArrayList<>(listaPoligonos.keySet());
-
-            if (!listaPoligonos.get(chaves.get(0)).intercept(listaPoligonos.get(chaves.get(1)))) {
-                printError("false");
-            }
-
-            List<Poligono> pList = new ArrayList<>(2);
-            for (Map.Entry<List<Ponto>, PoligonoRetangulo> entry : listaPoligonos.entrySet()) {
-                if (entry.getKey().equals(chaves.get(0))) {
-                    pList.add(new Poligono(entry.getKey()));
-                } else if (entry.getKey().equals(chaves.get(1))) {
-                    pList.add(new Poligono(entry.getKey()));
-                }
-            }
-
-            if (pList.size() >= 2 && pList.get(0).IntercetaPoligono(pList.get(1).getPontos(), false)) {
-                intercepts = true;
-            }
+        for (Poligono poligonoPrint : poligonos) {
+            System.out.println(poligonoPrint.toString());
         }
-
-        String result = intercepts ? "true" : "false";
-        System.out.println(result);
     }
+/*
+Poligono 4 5 5 8 6 8 7 5 7
+Triangulo 7 1 9 1 9 3
+Quadrado 3 0 5 2 3 4 1 2
+Retangulo 0 1 1 0 3 2 2 3
 
+Retangulo 1 1 3 1 3 5 1 5
+90
+Retangulo 1 1 3 1 3 5 1 5
+-90 3 1
+Triangulo 2 1 4 1 3 4
+180
+
+Poligono 4 1 2 5 6 8 7 12 14
+-1 3
+Poligono 4 1 2 5 6 8 7 12 14
+-5 1
+
+Retangulo 1 1 5 1 5 3 1 3
+3 3
+Triangulo 1 0 3 0 2 3
+2 3
+*/
     /**
      * Reads from the input the number of points, reads them, and returns them in a
      * list of Ponto.
